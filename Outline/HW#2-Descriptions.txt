@@ -1,0 +1,67 @@
+Department of Computing                                  Fall 2019
+
+                         Comp2411 Database Systems
+
+
+                     Assignment 2 (Due: Sunday 17/11/2019)
+                     ====================================
+
+This assignment is about developing a student course registration system 
+for students to select and register courses in the Academic Registrar 
+environment. In particular, the following features and functions
+are expected:
+
+1) Data should be stored in an Oracle database. At least 3 tables
+should be involved for the assignment (e.g. Courses, Students,
+Enrollment). The dataset given in the "dataset.sql" file of the
+attached zipfile should be used for the exercises..
+
+2) The system should be implemented as a Java application with a GUI
+(Graphical User Interface). It should get access to the underlying
+database through Oracle-JDBC.
+
+3) The following kinds of queries are to be supported:
+	(a) A user should be able to login to the system as a student or an
+	    administrator.
+	(b) A student should be able to list all the courses in the system.
+	(c) A student should be able to list all the courses that he/she has
+	    registered.
+	(d) A student should be able to register courses in the system.
+	(e) A student should be able to modify his/her personal information.
+	(f) An administrator should be able to list all the courses and
+	    students in the system.
+	(g) Given a department name, an administrator should be able to list
+	    all the students in the department.
+	(h) An administrator should be able to add a new course or student
+	    to the system.
+	(i) An administrator should be able to modify the information of a
+	    course or a student in the system.
+	(j) An administrator should be able to delete a course or a student
+	    from the system.
+	(k) An administrator should be able to modify the grade of a student
+	    for one of his/her registered courses.
+
+	(l) An administrator should be able to list the top 5 students that
+	    have most courses registered.*
+	(m) An administrator should be able to list the top 5 students with
+	    the highest average grade values.*
+
+Note1: Queries (l) and (m) are extra ones for bonus points (ie, these are 
+       optional). In handling these two queries, you may choose to break ties 
+       arbitrarily, if any, when listing the top-N results.
+
+Note2: Extra bonus points may be given if you are able to define and use  
+       indexes for efficient join queries in the program.
+
+Note3: Extra bonus points may be given if the GUI of your program is good and
+       user friendly (easy and clear to use).
+
+_________
+Remark 1: The assignment can be done with a team of two students,
+although a single-student team is also possible. Please try to finalize 
+your team composition as soon as possible!
+
+Remark 2: For submission, each team is asked to hand in a brief
+documentation of your system, including a user-manual, a short demo,
+and the source code. A brief description of each team member's work
+is also expected.
