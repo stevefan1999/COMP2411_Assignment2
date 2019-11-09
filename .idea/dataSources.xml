@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="Oracle - @studora.comp.polyu.edu.hk" uuid="8edc2a70-f003-4997-a1b5-e11c38d0fa69">
+      <driver-ref>oracle</driver-ref>
+      <synchronize>true</synchronize>
+      <auto-commit>false</auto-commit>
+      <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
+      <jdbc-url>jdbc:oracle:thin:@studora.comp.polyu.edu.hk:1521:dbms</jdbc-url>
+    </data-source>
+  </component>
+</project>
