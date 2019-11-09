@@ -2,6 +2,10 @@
 before_script:
   - "export GRADLE_USER_HOME=`pwd`/.gradle"
 build:
+  artifacts:
+    paths:
+      - build
+      - .gradle
   cache:
     key: $CI_COMMIT_REF_NAME
     paths:
