@@ -4,30 +4,29 @@ import java.sql.Time
 import javax.persistence.*
 
 @Entity(name = "StudentEntity")
-@Table(name = "STUDENTS", schema = "19037626d", catalog = "")
-open class StudentEntity {
+@Table(name = "STUDENTS")
+class StudentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @get:Column(name = "STUDENT_ID", nullable = false)
+    @Column(name = "STUDENT_ID", nullable = false)
     lateinit var id: String
 
-    @get:Column(name = "STUDENT_NAME", nullable = false)
+    @Column(name = "STUDENT_NAME", nullable = false)
     lateinit var name: String
 
-    @get:Column(name = "DEPARTMENT", nullable = false)
+    @Column(name = "DEPARTMENT", nullable = false)
     lateinit var department: String
 
-    @get:Column(name = "ADDRESS", nullable = false)
+    @Column(name = "ADDRESS", nullable = false)
     lateinit var address: String
 
-    @get:Column(name = "BIRTHDATE", nullable = false)
+    @Column(name = "BIRTHDATE", nullable = false)
     lateinit var birthday: Time
 
-    @get:Column(name = "GENDER", nullable = false)
+    @Column(name = "GENDER", nullable = false)
     lateinit var gender: String
 
-    @get:OneToMany(cascade=[CascadeType.ALL])
-    @JoinColumn(name="STUDENT_ID")
+    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "studentId", fetch = FetchType.EAGER)
     lateinit var enrollments: List<EnrollmentEntity>
 
     override fun toString(): String =

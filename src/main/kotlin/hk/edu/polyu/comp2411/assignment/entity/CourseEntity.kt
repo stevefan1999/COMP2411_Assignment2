@@ -3,24 +3,23 @@ package hk.edu.polyu.comp2411.assignment.entity
 import javax.persistence.*
 
 @Entity(name = "CourseEntity")
-@Table(name = "COURSES", schema = "19037626d", catalog = "")
-open class CourseEntity {
+@Table(name = "COURSES")
+class CourseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @get:Column(name = "COURSE_ID", unique = true, nullable = false)
+    @Column(name = "COURSE_ID", unique = true, nullable = false)
     lateinit var id: String
 
-    @get:Column(name = "COURSE_TITLE", nullable = false)
+    @Column(name = "COURSE_TITLE", nullable = false)
     lateinit var title: String
 
-    @get:Column(name = "STAFF_NAME", nullable = false)
+    @Column(name = "STAFF_NAME", nullable = false)
     lateinit var nameOfStaff: String
 
-    @get:Column(name = "SECTION", nullable = false)
+    @Column(name = "SECTION", nullable = false)
     lateinit var section: String
 
-    @get:OneToMany(cascade=[CascadeType.ALL])
-    @JoinColumn(name="STUDENT_ID")
+    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "courseId", fetch = FetchType.EAGER)
     lateinit var enrollments: List<EnrollmentEntity>
 
     override fun toString(): String =
