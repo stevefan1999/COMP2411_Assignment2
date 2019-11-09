@@ -14,7 +14,6 @@ build:
     policy: push
   script:
     - "gradle --build-cache assemble"
-    - "gradle --build-cache shadowJar"
   stage: production
 image: "gradle:alpine"
 stages:
