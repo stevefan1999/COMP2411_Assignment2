@@ -11,23 +11,23 @@ open class UserBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    lateinit var id: String
+    open lateinit var id: String
 
     @Column(name = "name", nullable = false)
-    lateinit var name: String
+    open lateinit var name: String
 
     @Column(name = "department", nullable = true)
-    var department: String? = null
+    open var department: String? = null
 
     @Column(name = "address", nullable = true)
-    var address: String? = null
+    open var address: String? = null
 
     @Column(name = "birthday", nullable = true)
-    var birthday: Time? = null
+    open var birthday: Time? = null
 
     @Column(name = "gender", nullable = true)
     @Enumerated(EnumType.STRING)
-    var gender: Gender? = null
+    open var gender: Gender? = null
 
     override fun toString(): String =
         """Entity of type: ${javaClass.name} ( Id = $id Name = $name Department = $department Address = $address Birthday = $birthday Gender = $gender )"""
