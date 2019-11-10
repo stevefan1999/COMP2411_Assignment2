@@ -1,10 +1,10 @@
 create table users (
     id	CHAR(8) NOT NULL primary key,
     name	VARCHAR(100) NOT NULL,
-    department	VARCHAR(100) NOT NULL,
-    address		VARCHAR(255) NOT NULL,
-    birthdate	DATE NOT NULL,
-    gender		VARCHAR(6) NOT NULL
+    department	VARCHAR(100),
+    address		VARCHAR(255),
+    birthdate	DATE,
+    gender		VARCHAR(6)
 );
 
 insert into users (id, name, department, address, birthdate, gender)
