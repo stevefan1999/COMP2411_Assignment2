@@ -27,7 +27,7 @@ plugins {
 }
 
 application {
-    mainClassName = "hk.edu.polyu.comp2411.assignment.AssignmentApplicationKt"
+    mainClassName = "hk.edu.polyu.comp2411.assignment.AssignmentApplication"
 }
 
 repositories {
@@ -38,6 +38,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("moe.tristan:easyfxml:3.3.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
