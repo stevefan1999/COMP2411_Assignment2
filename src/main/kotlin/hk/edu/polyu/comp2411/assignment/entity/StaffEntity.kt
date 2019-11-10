@@ -1,17 +1,13 @@
 package hk.edu.polyu.comp2411.assignment.entity
 
-import java.sql.Time
 import javax.persistence.*
 
-@Entity(name = "StudentEntity")
-@Table(name = "STUDENTS")
+@Entity(name = "StaffEntity")
+@Table(name = "STAFFS")
 @PrimaryKeyJoinColumn(name = "id")
-class StudentEntity : UserBaseEntity() {
-    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "student", fetch = FetchType.EAGER)
-    lateinit var enrollments: List<EnrollmentEntity>
-
-    override fun toString(): String =
-        """Entity of type: ${javaClass.name} ( Id = $id Name = $name Department = $department Address = $address Birthday = $birthday Gender = $gender )"""
+class StaffEntity : UserBaseEntity() {
+    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "taughtBy", fetch = FetchType.EAGER)
+    lateinit var teachings: List<CourseEntity>
 
     // constant value returned to avoid entity inequality to itself before and after it's update/merge
     override fun hashCode(): Int = 42
@@ -22,6 +18,4 @@ class StudentEntity : UserBaseEntity() {
         other as UserBaseEntity
         return this === other
     }
-
 }
-

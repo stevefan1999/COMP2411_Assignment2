@@ -22,15 +22,15 @@ class EnrollmentEntity {
     var grade: Byte? = null
 
     @ManyToOne
-    @JoinColumn(name="STUDENT_ID", insertable=false, updatable=false)
+    @JoinColumn(name="STUDENT_ID", referencedColumnName = "ID", insertable=false, updatable=false)
     lateinit var student: StudentEntity
 
     @ManyToOne
-    @JoinColumn(name="COURSE_ID", insertable=false, updatable=false)
+    @JoinColumn(name="COURSE_ID", referencedColumnName = "ID", insertable=false, updatable=false)
     lateinit var course: CourseEntity
 
     override fun toString(): String =
-        "Entity of type: ${javaClass.name} ( StudentId = ${studentId} CourseId = ${courseId} RegistrationDate = $registrationDate Grade = $grade )"
+        "Entity of type: ${javaClass.name} ( StudentId = ${student.id} CourseId = ${course.id} RegistrationDate = $registrationDate Grade = $grade )"
 
     // constant value returned to avoid entity inequality to itself before and after it's update/merge
     override fun hashCode(): Int = 42
@@ -41,8 +41,8 @@ class EnrollmentEntity {
         other as EnrollmentEntity
 
         //if (!id.equals(other)) return false
-        if (studentId != other.studentId) return false
-        if (courseId != other.courseId) return false
+        if (student != other.student) return false
+        if (course != other.course) return false
         if (registrationDate != other.registrationDate) return false
         if (grade != other.grade) return false
 
