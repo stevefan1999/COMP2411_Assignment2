@@ -1,5 +1,6 @@
 package hk.edu.polyu.comp2411.assignment.entity
 
+import hk.edu.polyu.comp2411.assignment.entity.enum.Gender
 import java.sql.Time
 import javax.persistence.*
 
@@ -15,17 +16,18 @@ open class UserBaseEntity {
     @Column(name = "name", nullable = false)
     lateinit var name: String
 
-    @Column(name = "department", nullable = false)
-    lateinit var department: String
+    @Column(name = "department", nullable = true)
+    var department: String? = null
 
-    @Column(name = "address", nullable = false)
-    lateinit var address: String
+    @Column(name = "address", nullable = true)
+    var address: String? = null
 
-    @Column(name = "birthday", nullable = false)
-    lateinit var birthday: Time
+    @Column(name = "birthday", nullable = true)
+    var birthday: Time? = null
 
-    @Column(name = "gender", nullable = false)
-    lateinit var gender: String
+    @Column(name = "gender", nullable = true)
+    @Enumerated(EnumType.STRING)
+    var gender: Gender? = null
 
     override fun toString(): String =
         """Entity of type: ${javaClass.name} ( Id = $id Name = $name Department = $department Address = $address Birthday = $birthday Gender = $gender )"""
