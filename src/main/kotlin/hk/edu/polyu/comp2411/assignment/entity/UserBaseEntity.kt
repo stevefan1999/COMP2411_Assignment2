@@ -3,12 +3,29 @@ package hk.edu.polyu.comp2411.assignment.entity
 import java.sql.Time
 import javax.persistence.*
 
-@Entity(name = "StudentEntity")
-@Table(name = "STUDENTS")
-@PrimaryKeyJoinColumn(name = "id")
-class StudentEntity : UserBaseEntity() {
-    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "studentId", fetch = FetchType.EAGER)
-    lateinit var enrollments: List<EnrollmentEntity>
+@Entity(name = "UserBaseEntity")
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+open class UserBaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    lateinit var id: String
+
+    @Column(name = "name", nullable = false)
+    lateinit var name: String
+
+    @Column(name = "department", nullable = false)
+    lateinit var department: String
+
+    @Column(name = "address", nullable = false)
+    lateinit var address: String
+
+    @Column(name = "birthday", nullable = false)
+    lateinit var birthday: Time
+
+    @Column(name = "gender", nullable = false)
+    lateinit var gender: String
 
     override fun toString(): String =
         """Entity of type: ${javaClass.name} ( Id = $id Name = $name Department = $department Address = $address Birthday = $birthday Gender = $gender )"""
@@ -30,6 +47,4 @@ class StudentEntity : UserBaseEntity() {
 
         return true
     }
-
 }
-
