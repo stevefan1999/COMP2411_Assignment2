@@ -1,8 +1,8 @@
 alter table students
-drop (STUDENT_NAME, DEPARTMENT, ADDRESS, BIRTHDATE, GENDER);
+    drop (STUDENT_NAME, DEPARTMENT, ADDRESS, BIRTHDATE, GENDER);
 
 alter table students
-rename column student_id to id;
+    rename column student_id to id;
 
 alter table students
-add constraint "fk: students::id -> users::id" foreign key (id) references users (id);
+    add constraint "fk: students::id -> users::id" foreign key (id) references users (id);

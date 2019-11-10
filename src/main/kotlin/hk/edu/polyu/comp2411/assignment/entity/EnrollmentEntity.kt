@@ -22,11 +22,11 @@ class EnrollmentEntity {
     var grade: Byte? = null
 
     @ManyToOne
-    @JoinColumn(name="STUDENT_ID", referencedColumnName = "ID", insertable=false, updatable=false)
+    @JoinColumn(name = "STUDENT_ID", referencedColumnName = "ID", insertable = false, updatable = false)
     lateinit var student: StudentEntity
 
     @ManyToOne
-    @JoinColumn(name="COURSE_ID", referencedColumnName = "ID", insertable=false, updatable=false)
+    @JoinColumn(name = "COURSE_ID", referencedColumnName = "ID", insertable = false, updatable = false)
     lateinit var course: CourseEntity
 
     override fun toString(): String =

@@ -1,7 +1,8 @@
 package hk.edu.polyu.comp2411.assignment.entity
 
 import java.io.Serializable
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Embeddable
 
 @Embeddable
 class CourseStudentKeyEntity : Serializable {

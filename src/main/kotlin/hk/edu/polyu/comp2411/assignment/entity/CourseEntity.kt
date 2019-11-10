@@ -16,11 +16,11 @@ class CourseEntity {
     @Column(name = "SECTION", nullable = false)
     lateinit var section: String
 
-    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "course", fetch = FetchType.EAGER)
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "course", fetch = FetchType.EAGER)
     lateinit var enrollments: List<EnrollmentEntity>
 
     @ManyToOne
-    @JoinColumn(name="STAFF_ID", referencedColumnName = "id")
+    @JoinColumn(name = "STAFF_ID", referencedColumnName = "id")
     lateinit var taughtBy: StaffEntity
 
     override fun toString(): String =
@@ -37,7 +37,7 @@ class CourseEntity {
         if (id != other.id) return false
         if (title != other.title) return false
         if (section != other.section) return false
-        if (enrollments != other.enrollments)
+        if (enrollments != other.enrollments) return false
         if (taughtBy != other.taughtBy) return false
 
         return true

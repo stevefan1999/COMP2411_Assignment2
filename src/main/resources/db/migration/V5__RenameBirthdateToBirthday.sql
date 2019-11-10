@@ -1,2 +1,2 @@
 alter table users
-rename column birthdate to birthday;
+    rename column birthdate to birthday;

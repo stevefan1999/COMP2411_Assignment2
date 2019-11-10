@@ -6,7 +6,7 @@ import javax.persistence.*
 @Table(name = "STAFFS")
 @PrimaryKeyJoinColumn(name = "id")
 class StaffEntity : UserBaseEntity() {
-    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "taughtBy", fetch = FetchType.EAGER)
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "taughtBy", fetch = FetchType.EAGER)
     lateinit var teachings: List<CourseEntity>
 
     // constant value returned to avoid entity inequality to itself before and after it's update/merge

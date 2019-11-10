@@ -1,13 +1,12 @@
 package hk.edu.polyu.comp2411.assignment.entity
 
-import java.sql.Time
 import javax.persistence.*
 
 @Entity(name = "StudentEntity")
 @Table(name = "STUDENTS")
 @PrimaryKeyJoinColumn(name = "id")
 class StudentEntity : UserBaseEntity() {
-    @OneToMany(cascade=[CascadeType.ALL], mappedBy = "student", fetch = FetchType.EAGER)
+    @OneToMany(cascade = [CascadeType.ALL], mappedBy = "student", fetch = FetchType.EAGER)
     lateinit var enrollments: List<EnrollmentEntity>
 
     override fun toString(): String =
