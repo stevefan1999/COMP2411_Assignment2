@@ -1,5 +1,7 @@
 package hk.edu.polyu.comp2411.assignment.view.hello
 
+import com.jfoenix.controls.JFXButton
+import com.jfoenix.controls.JFXTextField
 import hk.edu.polyu.comp2411.assignment.repository.StudentRepository
 import javafx.fxml.FXML
 import javafx.scene.control.*
@@ -12,8 +14,8 @@ import org.springframework.stereotype.Component
 class HelloController(
     var students: StudentRepository
 ) : FxmlController {
-    @FXML private lateinit var userNameTextField: TextField
-    @FXML private lateinit var helloButton: Button
+    @FXML private lateinit var userNameTextField: JFXTextField
+    @FXML private lateinit var helloButton: JFXButton
     @FXML private lateinit var greetingBox: HBox
     @FXML private lateinit var greetingName: Label
 

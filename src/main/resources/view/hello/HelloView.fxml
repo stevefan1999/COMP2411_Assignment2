@@ -16,6 +16,7 @@
   ~    limitations under the License.
   -->
 
+<?import com.jfoenix.controls.* ?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -57,10 +58,10 @@
                     <children>
                         <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                                text="What is your name?"/>
-                        <TextField fx:id="userNameTextField" promptText="mine is EasyFXML!"/>
+                        <JFXTextField fx:id="userNameTextField" promptText="mine is EasyFXML!"/>
                     </children>
                 </HBox>
-                <Button fx:id="helloButton" mnemonicParsing="false" prefWidth="96.0" text="Hello!"/>
+                <JFXButton fx:id="helloButton" mnemonicParsing="false" prefWidth="96.0" text="Hello!"/>
                 <HBox fx:id="greetingBox" alignment="CENTER" VBox.vgrow="NEVER">
                     <children>
                         <Label text="Hello, "/>

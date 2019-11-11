@@ -45,6 +45,7 @@ dependencies {
     }
     compile(files("lib/ojdbc7.jar"))
     compile("org.flywaydb:flyway-core:6.0.8")
+    compile("com.jfoenix:jfoenix:9.0.8")
 }
 
 javafx {

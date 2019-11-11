@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component
 
 @Component
 open class HelloComponent : FxmlComponent {
-    override fun getFile() = FxmlFile { "/fxml/HelloView.fxml" }
+    override fun getFile() = FxmlFile { "/view/hello/HelloView.fxml" }
     override fun getControllerClass() = HelloController::class.java
 }
