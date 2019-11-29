@@ -6,7 +6,6 @@ import javax.persistence.*
 @Table(name = "COURSES")
 data class CourseEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
     val id: String,
 
@@ -21,7 +20,19 @@ data class CourseEntity(
 
     @ManyToOne
     @JoinColumn(name = "STAFF_ID", referencedColumnName = "id")
-    val taughtBy: StaffEntity? = null
+    var taughtBy: StaffEntity? = null
 
     override fun hashCode() = id.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CourseEntity
+
+        if (id != other.id) return false
+        if (title != other.title) return false
+        if (section != other.section) return false
+
+        return true
+    }
 }

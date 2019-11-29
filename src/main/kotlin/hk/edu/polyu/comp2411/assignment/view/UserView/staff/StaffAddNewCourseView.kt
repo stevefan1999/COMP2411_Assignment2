@@ -2,33 +2,24 @@ package hk.edu.polyu.comp2411.assignment.view.UserView.staff
 
 import com.jfoenix.controls.JFXButton
 import hk.edu.polyu.comp2411.assignment.entity.CourseEntity
-import hk.edu.polyu.comp2411.assignment.entity.StudentEntity
-import hk.edu.polyu.comp2411.assignment.entity.enum.Gender
-import hk.edu.polyu.comp2411.assignment.extension.bcrypt
-import hk.edu.polyu.comp2411.assignment.extension.bcryptCheck
-import hk.edu.polyu.comp2411.assignment.repository.CourseRepository
+import hk.edu.polyu.comp2411.assignment.service.CourseService
 import hk.edu.polyu.comp2411.assignment.service.StudentService
 import hk.edu.polyu.comp2411.assignment.service.UserService
-import hk.edu.polyu.comp2411.assignment.view.UserView.UserMasterView
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
-import javafx.geometry.Orientation
-import javafx.scene.layout.Priority
 import javafx.scene.paint.Paint
-import kfoenix.*
-import ktfx.collections.toObservableList
+import kfoenix.jfxbutton
+import kfoenix.jfxtextfield
 import tornadofx.*
-import java.time.LocalDate
 
-class StaffAddNewStudentView : View("Welcome staff") {
+class StaffAddNewCourseView : View("Add new course...") {
     private val userService: UserService by di()
     private val studentService: StudentService by di()
-    private val courses: CourseRepository by di()
+    private val courseService: CourseService by di()
 
     val model = ViewModel()
-    val identifier by lazy { model.bind { SimpleStringProperty() } }
-    val name by lazy { model.bind { SimpleStringProperty() } }
-    val section by lazy { model.bind { SimpleStringProperty() } }
+    val identifier by lazy { model.bind { SimpleStringProperty("") } }
+    val name by lazy { model.bind { SimpleStringProperty("") } }
+    val section by lazy { model.bind { SimpleStringProperty("") } }
 
     override fun onDock() {
         name.value = ""
@@ -49,7 +40,15 @@ class StaffAddNewStudentView : View("Welcome staff") {
                                         jfxtextfield {
                                             bind(identifier)
                                             required()
+                                            validator {
+                                                if (it?.length!! > 6) {
+                                                    error("This field is too long")
+                                                } else {
+                                                    null
+                                                }
+                                            }
                                         }
+
                                     }
                                     field("Course Name") {
                                         jfxtextfield {
@@ -61,6 +60,13 @@ class StaffAddNewStudentView : View("Welcome staff") {
                                         jfxtextfield {
                                             bind(section)
                                             required()
+                                            validator {
+                                                if (it?.length!! > 3) {
+                                                    error("This field is too long")
+                                                } else {
+                                                    null
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -80,8 +86,7 @@ class StaffAddNewStudentView : View("Welcome staff") {
                         action {
                             val course = CourseEntity(identifier.value, name.value, section.value)
 
-                            var persistedCourse =  courses.save(course)
-                            if (persistedCourse != null) {
+                            if (courseService.addCourse(course)) {
                                 information("Add course", "Course successfully added as ${course.id}!")
                             } else {
                                 error("Add course", "Failed to add course!")

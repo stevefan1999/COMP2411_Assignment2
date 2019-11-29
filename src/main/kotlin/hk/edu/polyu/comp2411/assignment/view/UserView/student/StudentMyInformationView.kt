@@ -20,14 +20,14 @@ class StudentMyInformationView : View("My information") {
     private val userService: UserService by di()
 
     val model = ViewModel()
-    val name by lazy { model.bind { SimpleStringProperty() } }
+    val name by lazy { model.bind { SimpleStringProperty("") } }
     val birthday by lazy { model.bind { SimpleObjectProperty<LocalDate>() } }
-    val address by lazy { model.bind { SimpleStringProperty() } }
+    val address by lazy { model.bind { SimpleStringProperty("") } }
     val gender by lazy { model.bind { SimpleObjectProperty<Gender>() } }
 
     val passwordViewModel = ViewModel()
-    val oldPassword by lazy { passwordViewModel.bind { SimpleStringProperty() } }
-    val newPassword by lazy { passwordViewModel.bind { SimpleStringProperty() } }
+    val oldPassword by lazy { passwordViewModel.bind { SimpleStringProperty("") } }
+    val newPassword by lazy { passwordViewModel.bind { SimpleStringProperty("") } }
 
     override fun onDock() {
         val student = userService.loggedInAs as StudentEntity

@@ -1,15 +1,10 @@
 package hk.edu.polyu.comp2411.assignment.view.UserView.staff
 
-import hk.edu.polyu.comp2411.assignment.MyView1
 import hk.edu.polyu.comp2411.assignment.service.UserService
 import hk.edu.polyu.comp2411.assignment.view.LoginView.LoginView
 import hk.edu.polyu.comp2411.assignment.view.UserView.UserMasterView
-import hk.edu.polyu.comp2411.assignment.view.UserView.student.StudentAllCoursesView
-import javafx.scene.control.Alert
 import kfoenix.jfxbutton
-import ktfx.dialogs.confirmAlert
 import tornadofx.*
-import tornadofx.controlsfx.confirmNotification
 
 class StaffMenuView : View() {
     private val userService: UserService by di()

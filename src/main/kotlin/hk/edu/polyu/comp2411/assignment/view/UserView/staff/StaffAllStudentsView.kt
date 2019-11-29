@@ -16,20 +16,22 @@ import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Paint
 import kfoenix.*
+import ktfx.collections.toMutableObservableList
 import ktfx.collections.toObservableList
 import tornadofx.*
 import java.sql.Date
 import java.time.LocalDate
 
-class StaffAllStudentsView : View("All courses") {
+class StaffAllStudentsView : View("All students") {
     val courses: CourseRepository by di()
     val students: StudentRepository by di()
     val userService: UserService by di()
 
-    val model = ViewModel()
-    val selectedStudent by lazy { model.bind { SimpleObjectProperty<StudentEntity>() } }
-    val selectedStudentEnrollemnts by lazy { model.bind { SimpleListProperty<EnrollmentEntity>() } }
+    val selectionModel = ViewModel()
+    val selectedStudent by lazy { selectionModel.bind { SimpleObjectProperty<StudentEntity>() } }
+    val selectedStudentEnrollemnts by lazy { selectionModel.bind { SimpleListProperty<EnrollmentEntity>() } }
 
+    val model = ViewModel()
     val name by lazy { model.bind { SimpleStringProperty() } }
     val birthday by lazy { model.bind { SimpleObjectProperty<LocalDate>() } }
     val address by lazy { model.bind { SimpleStringProperty() } }
@@ -37,14 +39,13 @@ class StaffAllStudentsView : View("All courses") {
 
     val passwordViewModel = ViewModel()
     val newPassword by lazy { passwordViewModel.bind { SimpleStringProperty() } }
-
     val studentData by lazy { model.bind { SimpleListProperty<StudentEntity>() } }
 
     var studentTable: TableView<StudentEntity>? = null
 
     init {
         selectedStudent.addListener {_ ->
-            selectedStudentEnrollemnts.value = selectedStudent.value?.enrollments?.toObservableList()
+            selectedStudentEnrollemnts.value = selectedStudent.value?.enrollments?.toMutableObservableList()
             name.value = selectedStudent.value?.name
             birthday.value = selectedStudent.value?.birthday
             address.value = selectedStudent.value?.address
@@ -59,7 +60,7 @@ class StaffAllStudentsView : View("All courses") {
     fun refreshStudentData() {
         selectedStudent.value = null
         studentData.value = null
-        studentData.value = students.findAll().toObservableList()
+        studentData.value = students.findAll().toMutableObservableList()
         val columns = studentTable?.columns?.get(0)
         columns?.isVisible = false
         columns?.isVisible = true
@@ -85,6 +86,9 @@ class StaffAllStudentsView : View("All courses") {
                     column("Birthday", StudentEntity::birthday)
                     column("Enrolled Courses", Number::class) {
                         value { it.value.enrollments?.size }
+                    }
+                    column("Average grade", String::class) {
+                        value { "%.3f".format(it.value.enrollments?.map { it.grade }?.average()) }
                     }
 
                     contextmenu {
@@ -126,9 +130,6 @@ class StaffAllStudentsView : View("All courses") {
                         }
                         column("Grade", Number::class) {
                             value {
-                                if (it.value.course?.taughtBy == userService.loggedInAs) {
-                                    makeEditable()
-                                }
                                 it.value.grade
                             }
                         }
@@ -136,19 +137,10 @@ class StaffAllStudentsView : View("All courses") {
                             value { it.value.registrationDate }
                         }
 
-                        enableCellEditing()
-                        regainFocusAfterEdit()
-                        // enableDirtyTracking()
-
-                        onEditCommit {
-                            println("commit")
-                        }
-
                         smartResize()
                     }
 
                     form {
-                        val student = selectedStudent.value
                         hbox(10) {
                             fieldset("Personal Info") {
                                 hbox(10) {
@@ -174,46 +166,37 @@ class StaffAllStudentsView : View("All courses") {
                                                 vgrow = Priority.ALWAYS
                                             }
                                         }
-                                    }
-                                }
-                            }
-                            fieldset("Study information") {
-                                hbox(10) {
-                                    vbox {
-                                        field("Registered courses") {
-                                            label("${student?.enrollments?.size}")
-                                        }
-                                        field("Department") {
-                                            label(student?.department ?: "N/A")
-                                        }
-                                    }
-                                }
-                            }
-                            fieldset("Change password") {
-                                hbox(10) {
-                                    vbox {
-                                        field("New password") {
-                                            jfxpasswordfield {
-                                                bind(newPassword)
-                                                required()
-                                            }
-                                        }
-                                        jfxbutton("Change password") {
-                                            enableWhen(passwordViewModel.valid)
-                                            style {
-                                                buttonType = JFXButton.ButtonType.RAISED
-                                                textFill = Paint.valueOf("white")
-                                                backgroundColor += Paint.valueOf("blue")
-                                            }
 
-                                            action {
-                                                selectedStudent.value.password = newPassword.value.bcrypt()
 
-                                                when (userService.users.save(selectedStudent.value)) {
-                                                    student -> information("Update password", "Success!")
-                                                    else -> error("Update password", "Failure!")
+                                        fieldset("Change password") {
+                                            hbox(10) {
+                                                vbox {
+                                                    field("New password") {
+                                                        jfxpasswordfield {
+                                                            bind(newPassword)
+                                                            required()
+                                                        }
+                                                    }
+                                                    jfxbutton("Change password") {
+                                                        enableWhen(passwordViewModel.valid)
+                                                        style {
+                                                            buttonType = JFXButton.ButtonType.RAISED
+                                                            textFill = Paint.valueOf("white")
+                                                            backgroundColor += Paint.valueOf("blue")
+                                                        }
+
+                                                        action {
+                                                            val student = selectedStudent.value
+                                                            student.password = newPassword.value.bcrypt()
+
+                                                            when (userService.users.save(student)) {
+                                                                student -> information("Update password", "Success!")
+                                                                else -> error("Update password", "Failure!")
+                                                            }
+                                                            refreshStudentData()
+                                                        }
+                                                    }
                                                 }
-                                                refreshStudentData()
                                             }
                                         }
                                     }

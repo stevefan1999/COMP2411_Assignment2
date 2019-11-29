@@ -1,57 +1,10 @@
 package hk.edu.polyu.comp2411.assignment
 
-import hk.edu.polyu.comp2411.assignment.entity.StudentEntity
-import hk.edu.polyu.comp2411.assignment.repository.CourseRepository
-import hk.edu.polyu.comp2411.assignment.repository.UserBaseRepository
 import hk.edu.polyu.comp2411.assignment.view.LoginView.LoginView
-import ktfx.collections.toObservableList
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import tornadofx.*
 import kotlin.reflect.KClass
-
-class MyFragment : Fragment() {
-    override val root = label("This is a popup")
-}
-
-class MyView1 : View() {
-    override val root = vbox {
-        button("Go to MyView2") {
-            action {
-                replaceWith<MyView2>()
-            }
-        }
-    }
-}
-
-class MyView2 : View() {
-    override val root = vbox {
-        button("Go to MyView1") {
-            action {
-                replaceWith<HelloWorld>()
-            }
-        }
-    }
-}
-
-class HelloWorld : View() {
-    val courses: CourseRepository by di()
-    val users: UserBaseRepository by di()
-
-    override val root = vbox {
-        label("My courses")
-        listview(courses.findAll().map { it.title }.toObservableList())
-        label("Users")
-        listview(users.findAll().map { "${it.name}: ${if (it is StudentEntity) "Student" else "Staff"}" }.toObservableList())
-
-        button("Press Me") {
-            action {
-                replaceWith<MyView1>(ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
-                // find<MyFragment>().openModal(stageStyle = StageStyle.UTILITY)
-            }
-        }
-    }
-}
 
 class MyStylesheet : Stylesheet() {
     init {

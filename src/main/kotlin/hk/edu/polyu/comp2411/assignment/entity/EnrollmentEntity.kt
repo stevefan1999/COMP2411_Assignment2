@@ -1,6 +1,5 @@
 package hk.edu.polyu.comp2411.assignment.entity
 
-import java.sql.Date
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -14,7 +13,7 @@ data class EnrollmentEntity(
     var registrationDate: LocalDate,
 
     @Column(name = "GRADE", nullable = false)
-    var grade: Byte? = null
+    var grade: Byte = 0
 ) {
 
     @ManyToOne
@@ -26,4 +25,16 @@ data class EnrollmentEntity(
     val course: CourseEntity? = null
 
     override fun hashCode() = id.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as EnrollmentEntity
+
+        if (id != other.id) return false
+        if (registrationDate != other.registrationDate) return false
+        if (grade != other.grade) return false
+
+        return true
+    }
 }
