@@ -1,17 +1,22 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val compileKotlin: KotlinCompile by tasks
+
 compileKotlin.kotlinOptions {
-    jvmTarget = "11"
+    jvmTarget = "1.8"
 }
+
 val compileTestKotlin: KotlinCompile by tasks
+
 compileTestKotlin.kotlinOptions {
-    jvmTarget = "11"
+    jvmTarget = "1.8"
 }
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 
@@ -19,11 +24,11 @@ plugins {
     application
     id("org.springframework.boot") version "2.2.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
-    id("org.openjfx.javafxplugin") version "0.0.8"
+
     kotlin("jvm") version "1.3.50"
     kotlin("plugin.spring") version "1.3.50"
     kotlin("plugin.jpa") version "1.3.50"
-    kotlin("plugin.allopen") version "1.3.50"
+    kotlin("plugin.noarg") version "1.3.50"
 }
 
 application {
@@ -32,25 +37,39 @@ application {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("moe.tristan:easyfxml:3.3.0")
+    listOf(
+        "com.github.bkenn:kfoenix:0.1.3",
+        "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8",
+        "com.github.thomasnield:rxkotlinfx:2.2.2",
+        "com.hendraanggrian.ktfx:ktfx:8.6.4",
+        "com.jfoenix:jfoenix:9.0.8",
+        "de.jensd:fontawesomefx-commons:11.0",
+        "de.jensd:fontawesomefx-materialdesignfont:2.0.26-9.1.2",
+        "io.github.microutils:kotlin-logging:1.7.6",
+        "io.reactivex.rxjava2:rxkotlin:2.4.0",
+        "no.tornado:tornadofx:1.7.17",
+        "no.tornado:tornadofx-controlsfx:0.1",
+        "org.flywaydb:flyway-core:6.0.8",
+        "org.jetbrains.kotlin:kotlin-reflect",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+        "org.springframework.boot:spring-boot-starter-data-jpa",
+        "org.springframework.boot:spring-boot-starter-security",
+        files("lib/ojdbc7.jar")
+    ).forEach(::implementation)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    compile(files("lib/ojdbc7.jar"))
-    compile("org.flywaydb:flyway-core:6.0.8")
-    compile("com.jfoenix:jfoenix:9.0.8")
 }
 
-javafx {
-    version = "11.0.2"
-    modules("javafx.controls", "javafx.fxml")
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
 }
 
 tasks.withType<Test> {
@@ -60,6 +79,7 @@ tasks.withType<Test> {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
+
