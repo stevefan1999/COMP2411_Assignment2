@@ -1,9 +1,12 @@
 package hk.edu.polyu.comp2411.assignment.view.UserView.student
 
 import com.jfoenix.controls.JFXButton
+import hk.edu.polyu.comp2411.assignment.controller.CourseController
+import hk.edu.polyu.comp2411.assignment.controller.CourseController.*
+import hk.edu.polyu.comp2411.assignment.controller.StudentController
+import hk.edu.polyu.comp2411.assignment.controller.StudentController.*
 import hk.edu.polyu.comp2411.assignment.entity.StudentEntity
 import hk.edu.polyu.comp2411.assignment.entity.enum.Gender
-import hk.edu.polyu.comp2411.assignment.extension.bcrypt
 import hk.edu.polyu.comp2411.assignment.extension.bcryptCheck
 import hk.edu.polyu.comp2411.assignment.service.UserService
 import javafx.beans.property.SimpleObjectProperty
@@ -29,24 +32,64 @@ class StudentMyInformationView : View("My information") {
     val oldPassword by lazy { passwordViewModel.bind { SimpleStringProperty("") } }
     val newPassword by lazy { passwordViewModel.bind { SimpleStringProperty("") } }
 
-    override fun onDock() {
-        val student = userService.loggedInAs as StudentEntity
-        name.value = student.name
-        birthday.value = student.birthday
-        address.value = student.address
-        gender.value = student.gender
-        model.clearDecorators()
+    class ReloadFormData {
+        class Request(
+            val student: StudentEntity
+        ) : FXEvent()
 
-        oldPassword.value = ""
-        newPassword.value = ""
-        passwordViewModel.clearDecorators()
+        class Event(
+            val student: StudentEntity
+        ) : FXEvent()
+    }
+
+    init {
+        subscribe<ReloadFormData.Event> {
+            name.value = it.student.name
+            birthday.value = it.student.birthday
+            address.value = it.student.address
+            gender.value = it.student.gender
+            model.clearDecorators()
+
+            oldPassword.value = ""
+            newPassword.value = ""
+            passwordViewModel.clearDecorators()
+        }
+
+        subscribe<ReloadFormData.Request> {
+            fire(ReloadFormData.Event(it.student))
+        }
+
+        subscribe<SaveStudent.Event> {
+            when (it.success) {
+                true -> information("Update data", "Success!")
+                else -> error("Update data", "Failure!")
+            }
+
+            onDock()
+        }
+
+        subscribe<ChangePassword.Event> {
+            when (it.success) {
+                true -> information("Update password", "Success!")
+                else -> error("Update password", "Failure!")
+            }
+
+            onDock()
+        }
+
+        subscribe<AddCourseToStudent.Event> {
+            onDock()
+        }
+    }
+
+    override fun onDock() {
+        fire(ReloadFormData.Request(userService.loggedInAs as StudentEntity))
     }
 
     override val root = scrollpane {
         borderpane {
             center {
                 form {
-                    val student = userService.loggedInAs as StudentEntity
                     hbox(20) {
                         fieldset("Personal Info") {
                             hbox(20) {
@@ -79,10 +122,18 @@ class StudentMyInformationView : View("My information") {
                             hbox(20) {
                                 vbox {
                                     field("Registered courses") {
-                                        label("${student.enrollments?.size}")
+                                        label {
+                                            subscribe<ReloadFormData.Event> {
+                                                text = "${it.student.enrollments?.size}"
+                                            }
+                                        }
                                     }
                                     field("Department") {
-                                        label(student.department ?: "N/A")
+                                        label {
+                                            subscribe<ReloadFormData.Event> {
+                                                text = it.student.department ?: "N/A"
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -118,17 +169,15 @@ class StudentMyInformationView : View("My information") {
                                         }
 
                                         action {
-
-                                            if (!student.password.bcryptCheck(oldPassword.value)) {
-                                                error("Update password", "Your provided old password is wrong!")
-                                            } else {
-                                                val student = userService.loggedInAs as StudentEntity
-                                                student.password = newPassword.value.bcrypt()
-
-                                                when (userService.users.save(student)) {
-                                                    student -> information("Update password", "Success!")
-                                                    else -> error("Update password", "Failure!")
-                                                }
+                                            val student = userService.loggedInAs as StudentEntity
+                                            when (student.password.bcryptCheck(oldPassword.value)) {
+                                                true -> fire(
+                                                    ChangePassword.Request(
+                                                        student,
+                                                        newPassword.value
+                                                    )
+                                                )
+                                                else -> error("Update password", "Your provided old password is wrong!")
                                             }
                                         }
                                     }
@@ -149,10 +198,7 @@ class StudentMyInformationView : View("My information") {
                             student.birthday = birthday.value
                             student.address = address.value
                             student.gender = gender.value
-                            when (userService.users.save(student)) {
-                                student -> information("Update data", "Success!")
-                                else -> error("Update data", "Failure!")
-                            }
+                            fire(SaveStudent.Request(student))
                         }
                     }
                 }

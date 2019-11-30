@@ -4,10 +4,8 @@ import com.jfoenix.controls.JFXButton
 import hk.edu.polyu.comp2411.assignment.entity.StudentEntity
 import hk.edu.polyu.comp2411.assignment.entity.enum.Gender
 import hk.edu.polyu.comp2411.assignment.extension.bcrypt
-import hk.edu.polyu.comp2411.assignment.extension.bcryptCheck
 import hk.edu.polyu.comp2411.assignment.service.StudentService
 import hk.edu.polyu.comp2411.assignment.service.UserService
-import hk.edu.polyu.comp2411.assignment.view.UserView.UserMasterView
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
@@ -56,7 +54,7 @@ class StaffAddNewStudentView : View("Welcome staff") {
                                     }
                                     field("Birthday") {
                                         jfxdatepicker {
-                                           bind(birthday)
+                                            bind(birthday)
                                             required()
                                         }
                                     }
@@ -115,7 +113,7 @@ class StaffAddNewStudentView : View("Welcome staff") {
                             student.address = address.value
                             student.gender = gender.value
 
-                            var persistedStudent =  studentService.addStudent(student)
+                            var persistedStudent = studentService.addStudent(student)
                             if (persistedStudent != null) {
                                 information("Add user", "User successfully added as ${persistedStudent.id}!")
                             } else {

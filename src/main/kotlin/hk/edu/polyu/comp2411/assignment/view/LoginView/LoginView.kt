@@ -5,8 +5,9 @@ import hk.edu.polyu.comp2411.assignment.entity.StaffEntity
 import hk.edu.polyu.comp2411.assignment.entity.StudentEntity
 import hk.edu.polyu.comp2411.assignment.service.UserService
 import hk.edu.polyu.comp2411.assignment.view.UserView.UserMasterView
+import hk.edu.polyu.comp2411.assignment.view.UserView.staff.StaffAllCoursesView
+import hk.edu.polyu.comp2411.assignment.view.UserView.staff.StaffAllStudentsView
 import hk.edu.polyu.comp2411.assignment.view.UserView.staff.StaffMenuView
-import hk.edu.polyu.comp2411.assignment.view.UserView.staff.StaffView
 import hk.edu.polyu.comp2411.assignment.view.UserView.student.StudentAllCoursesView
 import hk.edu.polyu.comp2411.assignment.view.UserView.student.StudentMenuView
 import javafx.beans.property.SimpleStringProperty
@@ -83,7 +84,7 @@ class LoginView : View("Login") {
                                     replaceWith(userMasterView)
                                 }
                                 is StaffEntity -> {
-                                    userMasterView.screenContent.value = find<StaffView>()
+                                    userMasterView.screenContent.value = find<StaffAllCoursesView>()
                                     userMasterView.sidePane.value = find<StaffMenuView>()
                                     replaceWith(userMasterView)
                                 }

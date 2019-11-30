@@ -38,7 +38,8 @@ class StaffMenuView : View() {
                 action {
                     confirm("Logout", "Are you sure you want to log out?") {
                         userService.loggedInAs = null
-                        primaryStage.uiComponent<UIComponent>()?.replaceWith<LoginView>(ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                        primaryStage.uiComponent<UIComponent>()
+                            ?.replaceWith<LoginView>(ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
                     }
                 }
             }

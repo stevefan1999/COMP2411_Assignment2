@@ -1,6 +1,5 @@
 package hk.edu.polyu.comp2411.assignment.service
 
-import hk.edu.polyu.comp2411.assignment.entity.StudentEntity
 import hk.edu.polyu.comp2411.assignment.entity.UserBaseEntity
 import hk.edu.polyu.comp2411.assignment.extension.bcryptCheck
 import hk.edu.polyu.comp2411.assignment.repository.UserBaseRepository

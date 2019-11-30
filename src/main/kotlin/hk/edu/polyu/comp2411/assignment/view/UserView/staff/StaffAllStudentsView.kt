@@ -1,35 +1,28 @@
 package hk.edu.polyu.comp2411.assignment.view.UserView.staff
 
 import com.jfoenix.controls.JFXButton
+import hk.edu.polyu.comp2411.assignment.controller.EnrollmentController
+import hk.edu.polyu.comp2411.assignment.controller.EnrollmentController.*
+import hk.edu.polyu.comp2411.assignment.controller.StudentController
+import hk.edu.polyu.comp2411.assignment.controller.StudentController.*
 import hk.edu.polyu.comp2411.assignment.entity.EnrollmentEntity
 import hk.edu.polyu.comp2411.assignment.entity.StudentEntity
 import hk.edu.polyu.comp2411.assignment.entity.enum.Gender
-import hk.edu.polyu.comp2411.assignment.extension.bcrypt
-import hk.edu.polyu.comp2411.assignment.repository.CourseRepository
-import hk.edu.polyu.comp2411.assignment.repository.StudentRepository
 import hk.edu.polyu.comp2411.assignment.service.UserService
-import javafx.beans.property.SimpleListProperty
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
-import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Paint
 import kfoenix.*
-import ktfx.collections.toMutableObservableList
 import ktfx.collections.toObservableList
 import tornadofx.*
 import java.sql.Date
 import java.time.LocalDate
 
 class StaffAllStudentsView : View("All students") {
-    val courses: CourseRepository by di()
-    val students: StudentRepository by di()
     val userService: UserService by di()
-
-    val selectionModel = ViewModel()
-    val selectedStudent by lazy { selectionModel.bind { SimpleObjectProperty<StudentEntity>() } }
-    val selectedStudentEnrollemnts by lazy { selectionModel.bind { SimpleListProperty<EnrollmentEntity>() } }
 
     val model = ViewModel()
     val name by lazy { model.bind { SimpleStringProperty() } }
@@ -39,35 +32,112 @@ class StaffAllStudentsView : View("All students") {
 
     val passwordViewModel = ViewModel()
     val newPassword by lazy { passwordViewModel.bind { SimpleStringProperty() } }
-    val studentData by lazy { model.bind { SimpleListProperty<StudentEntity>() } }
 
-    var studentTable: TableView<StudentEntity>? = null
+    val selectedStudent by lazy { model.bind { SimpleObjectProperty<StudentEntity>() } }
+
+    class ChangeGradeFragment: Fragment("Change grade...") {
+        val enrollment: EnrollmentEntity by param()
+
+        val model = ViewModel()
+        val grade by lazy { model.bind { SimpleIntegerProperty() } }
+
+        init {
+            subscribe<SaveEnrollment.Event> {
+                close()
+            }
+
+            grade.value = enrollment.grade
+        }
+
+        override val root = borderpane {
+            center {
+                label("New Grade")
+                jfxtextfield {
+                    bind(grade)
+                    required()
+                    filterInput { it.controlNewText.isInt() }
+                    validator {
+                        when (if (it != null && it.length >= 0) it.toInt() else null) {
+                            !in 0..100 -> error("The new grade must be in the range of [0, 100]")
+                            else -> null
+                        }
+                    }
+                }
+            }
+
+            bottom {
+                right {
+                    jfxbutton("Submit") {
+                        action {
+                            enrollment.grade = grade.value.toByte()
+                            fire(SaveEnrollment.Request(enrollment))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    class ReloadStudentFormRequest(
+        val student: StudentEntity
+    ) : FXEvent()
 
     init {
-        selectedStudent.addListener {_ ->
-            selectedStudentEnrollemnts.value = selectedStudent.value?.enrollments?.toMutableObservableList()
-            name.value = selectedStudent.value?.name
-            birthday.value = selectedStudent.value?.birthday
-            address.value = selectedStudent.value?.address
-            gender.value = selectedStudent.value?.gender
+        subscribe<ReloadStudentFormRequest> {
+            name.value = it.student.name
+            birthday.value = it.student.birthday
+            address.value = it.student.address
+            gender.value = it.student.gender
             model.clearDecorators()
 
             newPassword.value = ""
             passwordViewModel.clearDecorators()
         }
+
+        subscribe<LoadStudents.Event> {
+            selectedStudent.value = null
+        }
+
+        subscribe<ChangePassword.Event> {
+            when (it.success) {
+                true -> information("Update password", "Success!")
+                else -> error("Update password", "Failure!")
+            }
+
+            onDock()
+        }
+
+        subscribe<SaveStudent.Event> {
+            when (it.success) {
+                true -> information("Update data", "Success!")
+                else -> error("Update data", "Failure!")
+            }
+
+            onDock()
+        }
+
+        subscribe<DeleteStudent.Event> {
+            when (it.success) {
+                true -> information("Delete student", "Success!")
+                else -> error("Delete student", "Failure!")
+            }
+
+            onDock()
+        }
+
+        subscribe<SaveEnrollment.Event> {
+            selectedStudent.value = null
+            onDock()
+        }
     }
 
-    fun refreshStudentData() {
-        selectedStudent.value = null
-        studentData.value = null
-        studentData.value = students.findAll().toMutableObservableList()
-        val columns = studentTable?.columns?.get(0)
-        columns?.isVisible = false
-        columns?.isVisible = true
+    init {
+        find<StudentController>()
+        onDock()
     }
 
     override fun onDock() {
-        refreshStudentData()
+        fire(LoadStudents.Request())
     }
 
     override val root = borderpane {
@@ -76,7 +146,11 @@ class StaffAllStudentsView : View("All students") {
                 fontSize = 14.px
             }
             splitpane {
-                studentTable = tableview<StudentEntity>(studentData) {
+                tableview<StudentEntity> {
+                    subscribe<LoadStudents.Event> {
+                        items.setAll(it.students)
+                    }
+
                     column("#", String::class) {
                         value { it.value.id }
                     }
@@ -94,22 +168,31 @@ class StaffAllStudentsView : View("All students") {
                     contextmenu {
                         item("Delete student").action {
                             selectedItem?.apply {
-                                confirm("Logout", "Are you sure you want delete this student?") {
-                                    students.delete(this)
+                                confirm("Delete", "Are you sure you want delete this student?") {
+                                    fire(DeleteStudent.Request(this))
                                 }
-                                refreshStudentData()
                             }
                         }
                     }
 
-                    bindSelected(selectedStudent)
+                    selectionModel.selectedItemProperty().onChange {
+                        it?.let {
+                            selectedStudent.value = it
+                            fire(LoadStudent.Request(it))
+                        }
+                    }
 
                     smartResize()
                 }
 
                 splitpane {
                     orientation = Orientation.VERTICAL
-                    tableview(selectedStudentEnrollemnts) {
+                    tableview<EnrollmentEntity> {
+                        subscribe<LoadStudent.Event> {
+                            items.setAll(it.student.enrollments)
+                            fire(ReloadStudentFormRequest(it.student))
+                        }
+
                         column("#", String::class) {
                             value { it.value.course?.id }
                         }
@@ -121,8 +204,7 @@ class StaffAllStudentsView : View("All students") {
                         }
                         column("Teacher", String::class) {
                             value {
-                                val taughtBy = it.value.course?.taughtBy
-                                when (taughtBy) {
+                                when (val taughtBy = it.value.course?.taughtBy) {
                                     userService.loggedInAs -> "Me"
                                     else -> taughtBy?.name
                                 }
@@ -135,6 +217,17 @@ class StaffAllStudentsView : View("All students") {
                         }
                         column("Registration date", Date::class) {
                             value { it.value.registrationDate }
+                        }
+
+                        contextmenu {
+                            item("Change grade").action {
+                                selectedItem?.apply {
+                                    val modal = find<ChangeGradeFragment>(
+                                        mapOf(ChangeGradeFragment::enrollment to selectedItem)
+                                    )
+                                    openInternalWindow(modal)
+                                }
+                            }
                         }
 
                         smartResize()
@@ -167,7 +260,6 @@ class StaffAllStudentsView : View("All students") {
                                             }
                                         }
 
-
                                         fieldset("Change password") {
                                             hbox(10) {
                                                 vbox {
@@ -186,14 +278,12 @@ class StaffAllStudentsView : View("All students") {
                                                         }
 
                                                         action {
-                                                            val student = selectedStudent.value
-                                                            student.password = newPassword.value.bcrypt()
-
-                                                            when (userService.users.save(student)) {
-                                                                student -> information("Update password", "Success!")
-                                                                else -> error("Update password", "Failure!")
-                                                            }
-                                                            refreshStudentData()
+                                                            fire(
+                                                                ChangePassword.Request(
+                                                                    selectedStudent.value,
+                                                                    newPassword.value
+                                                                )
+                                                            )
                                                         }
                                                     }
                                                 }
@@ -216,11 +306,7 @@ class StaffAllStudentsView : View("All students") {
                                 student.birthday = birthday.value
                                 student.address = address.value
                                 student.gender = gender.value
-                                when (userService.users.save(student)) {
-                                    student -> information("Update data", "Success!")
-                                    else -> error("Update data", "Failure!")
-                                }
-                                refreshStudentData()
+                                fire(SaveStudent.Request(student))
                             }
                         }
                     }

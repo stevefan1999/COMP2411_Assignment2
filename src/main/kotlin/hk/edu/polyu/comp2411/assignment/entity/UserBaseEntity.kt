@@ -1,8 +1,6 @@
 package hk.edu.polyu.comp2411.assignment.entity
 
 import hk.edu.polyu.comp2411.assignment.entity.enum.Gender
-import org.springframework.security.core.userdetails.User
-import java.sql.Date
 import java.time.LocalDate
 import javax.persistence.*
 

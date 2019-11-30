@@ -22,12 +22,6 @@ class StudentMenuView : View() {
                 }
             }
 
-            jfxbutton("Register courses") {
-                action {
-                    find<UserMasterView>().screenContent.value = find<StudentRegisterCourseView>()
-                }
-            }
-
             jfxbutton("My information") {
                 action {
                     find<UserMasterView>().screenContent.value = find<StudentMyInformationView>()
@@ -38,7 +32,8 @@ class StudentMenuView : View() {
                 action {
                     confirm("Logout", "Are you sure you want to log out?") {
                         userService.loggedInAs = null
-                        primaryStage.uiComponent<UIComponent>()?.replaceWith<LoginView>(ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
+                        primaryStage.uiComponent<UIComponent>()
+                            ?.replaceWith<LoginView>(ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
                     }
                 }
             }
