@@ -17,6 +17,7 @@ class StudentMyCoursesView : View("My courses") {
 
     init {
         subscribe<AddCourseToStudent.Event> {
+            onDock()
             it.student?.let { fire(LoadStudent.Request(it)) }
         }
 

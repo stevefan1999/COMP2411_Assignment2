@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 val compileKotlin: KotlinCompile by tasks
 
 compileKotlin.kotlinOptions {
@@ -13,7 +14,14 @@ compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 tasks.withType<KotlinCompile> {
+    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+    targetCompatibility = JavaVersion.VERSION_1_8.toString()
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
@@ -31,8 +39,15 @@ plugins {
     kotlin("plugin.noarg") version "1.3.50"
 }
 
-application {
-    mainClassName = "hk.edu.polyu.comp2411.assignment.AssignmentApplication"
+springBoot {
+    mainClassName = "hk.edu.polyu.comp2411.assignment.AssignmentApplicationKt"
+}
+
+tasks.bootJar {
+    mainClassName = "hk.edu.polyu.comp2411.assignment.AssignmentApplicationKt"
+    manifest {
+        attributes("Start-Class" to "hk.edu.polyu.comp2411.assignment.AssignmentApplicationKt")
+    }
 }
 
 repositories {
@@ -46,10 +61,9 @@ dependencies {
         "com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8",
         "com.github.thomasnield:rxkotlinfx:2.2.2",
         "com.hendraanggrian.ktfx:ktfx:8.6.4",
-        "com.jfoenix:jfoenix:9.0.8",
-        "de.jensd:fontawesomefx-commons:11.0",
-        "de.jensd:fontawesomefx-materialdesignfont:2.0.26-9.1.2",
-        "io.github.microutils:kotlin-logging:1.7.6",
+        "com.jfoenix:jfoenix:8.0.8",
+        "de.jensd:fontawesomefx-commons:8.14",
+        "de.jensd:fontawesomefx-materialdesignfont:1.7.22-2",
         "io.reactivex.rxjava2:rxkotlin:2.4.0",
         "no.tornado:tornadofx:1.7.17",
         "no.tornado:tornadofx-controlsfx:0.1",
@@ -82,4 +96,3 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "1.8"
     }
 }
-

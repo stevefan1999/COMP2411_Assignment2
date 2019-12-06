@@ -3,8 +3,8 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="COMP2411_Assignment2.integrationTest" target="11" />
-      <module name="COMP2411_Assignment2.main" target="11" />
-      <module name="COMP2411_Assignment2.test" target="11" />
+      <module name="COMP2411_Assignment2.main" target="1.8" />
+      <module name="COMP2411_Assignment2.test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,6 +1,7 @@
 package hk.edu.polyu.comp2411.assignment
 
 import hk.edu.polyu.comp2411.assignment.view.LoginView.LoginView
+import javafx.application.Application
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import tornadofx.*
@@ -82,4 +83,8 @@ class AssignmentApplication : App(LoginView::class, MyStylesheet::class) {
 
         super.init()
     }
+}
+
+fun main(args: Array<String>) {
+    Application.launch(AssignmentApplication::class.java, *args)
 }
